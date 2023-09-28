@@ -1,0 +1,44 @@
+﻿@model List<Producto>
+@{
+    ViewData["Title"] = "Lista de Productos";
+}
+<h1>@ViewData["Title"]</h1>
+
+<button type="button" class="btn btn-success" onclick="location.href='@Url.Action("Create","Producto")'">Nuevo Producto</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Nombre</td>
+                <td>@item.Descripcion</td>
+                <td>@item.Cantidad</td>
+                <td>
+                    <button type="button" class="btn btn-primary">
+                        Ver <i class="fas fa-eye" style="color: #ffffff;"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        Editar  <i class="fa-solid fa-pen" style="color: #ffffff;"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        Borrar <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
+                    </button>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>En esta página se muestran los productos.</p>
