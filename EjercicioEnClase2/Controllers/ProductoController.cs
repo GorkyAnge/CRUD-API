@@ -7,84 +7,64 @@ namespace EjercicioEnClase2.Controllers
 {
     public class ProductoController : Controller
     {
-        // GET: ProductoController
-        public IActionResult Index()
-        {
-            return View(Util.Utils.ListaProducto);
-        }
+        private readonly HttpClient _httpClient;
+        private readonly string _apiBaseUrl = "http://localhost:5240";
 
-        // GET: ProductoController/Details/5
-        public IActionResult Details(int id)
+        public ProductoController()
         {
-            Producto producto = Utils.ListaProducto.Find(x => x.Id == id);
-            if (producto != null)
+            _httpClient = new HttpClient()
             {
-                return View(producto);
-            }
-            return RedirectToAction("Index");
+                BaseAddress = new Uri(_apiBaseUrl)
+            };
         }
 
-        // GET: ProductoController/Create
+        public async Task<IActionResult> Index()
+        {
+            var productos = await _httpClient.GetFromJsonAsync<List<Producto>>("api/Producto");
+
+            return View(productos);
+        }
+
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-
-        public IActionResult Create(Producto producto)
+        public async Task<IActionResult> Create(Producto producto)
         {
-            int id=Utils.ListaProducto.Count()+1;
-            producto.Id = id;
-            Utils.ListaProducto.Add(producto);
+            await _httpClient.PostAsJsonAsync("api/Producto", producto);
             return RedirectToAction("Index");
         }
 
-        // GET: ProductoController/Edit/5
-        public IActionResult Edit(int Id)
+        public async Task<IActionResult> Details(int id)
         {
-            Producto producto = Utils.ListaProducto.Find(x => x.Id == Id);
-            if (producto != null)
-            {
-                return View(producto);
-            }
+            var producto = await _httpClient.GetFromJsonAsync<Producto>($"api/Producto/{id}");
+            if (producto != null) return View(producto);
             return RedirectToAction("Index");
-            
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var producto = await _httpClient.GetFromJsonAsync<Producto>($"api/Producto/{id}");
+            if (producto != null) return View(producto);
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
-        public IActionResult Edit(Producto updatedProducto)
+        public async Task<IActionResult> Edit(Producto producto)
         {
-            // Find the original producto with the same Id in your list.
-            Producto originalProducto = Utils.ListaProducto.Find(x => x.Id == updatedProducto.Id);
+            await _httpClient.PutAsJsonAsync($"api/Producto/{producto.Id}", producto);
 
-            // Check if the original producto exists.
-            if (originalProducto != null)
-            {
-                // Update the properties of the original product with the properties of the updated product.
-                originalProducto.Nombre = updatedProducto.Nombre; // Replace with actual property names
-                originalProducto.Descripcion = updatedProducto.Descripcion; // Replace with actual property names
-                originalProducto.Cantidad = updatedProducto.Cantidad; // Replace with actual property names
-                // Redirect to the Index action after successfully updating the product.
-                return RedirectToAction("Index");
-            }
-
-            // If the original producto with the given Id does not exist, redirect to the Index action.
-            return RedirectToAction("Index");
-
-        }
-
-
-        // GET: ProductoController/Delete/5
-        public IActionResult Delete(int Id)
-        {
-            Producto producto = Utils.ListaProducto.Find(x => x.Id == Id);
-            if(producto != null)
-            {
-                Utils.ListaProducto.Remove(producto);
-            }
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _httpClient.DeleteAsync($"api/Producto/{id}");
+
+            return RedirectToAction("Index");
+        }
 
     }
 }
