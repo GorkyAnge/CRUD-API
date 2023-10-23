@@ -8,7 +8,7 @@ namespace EjercicioEnClase2.Models
     //ola Rama
 
     //ola rama 2
-    //tripleS
+    //shakira
     public class Producto
     {
         public int Id { get; set; }
