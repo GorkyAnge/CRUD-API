@@ -63,5 +63,45 @@ namespace EjercicioEnClase2.Controllers
             if (producto != null) return View(producto);
             return RedirectToAction("Index");
         }
+
+        // Acción para mostrar el formulario de edición de un producto
+        public async Task<IActionResult> Edit(int id)
+        {
+            // Realiza una solicitud GET al API para obtener
+            //un producto específico que se desea editar
+
+            var producto = await _httpClient.GetFromJsonAsync<Producto>($"api/Producto/{id}");
+
+            // Si se encuentra el producto, muestra una vista con 
+            //el formulario de edición
+            ///de lo contrario, redirige al usuario a la lista de productos
+
+            if (producto != null) return View(producto);
+            return RedirectToAction("Index");
+        }
+
+        // Acción para procesar la edición de un producto
+        [HttpPost]
+        public async Task<IActionResult> Edit(Producto producto)
+        {
+            // Realiza una solicitud PUT al API para actualizar
+            //un producto con los datos proporcionados
+
+            await _httpClient.PutAsJsonAsync($"api/Producto/{producto.Id}", producto);
+
+            // Redirige al usuario a la lista de productos (acción "Index")
+            return RedirectToAction("Index");
+        }
+
+        // Acción para eliminar un producto
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Realiza una solicitud DELETE al API para eliminar un producto específico
+            await _httpClient.DeleteAsync($"api/Producto/{id}");
+
+            // Redirige al usuario a la lista de productos (acción "Index")
+            return RedirectToAction("Index");
+        }
     }
 }
+
