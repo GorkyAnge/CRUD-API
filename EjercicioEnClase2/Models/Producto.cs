@@ -4,6 +4,8 @@ namespace EjercicioEnClase2.Models
 {
 
     //olapapus
+
+    //ola Rama
     public class Producto
     {
         public int Id { get; set; }
